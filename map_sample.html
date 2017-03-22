@@ -1,0 +1,103 @@
+<!DOCTYPE html "-//W3C//DTD XHTML 1.0 Strict//EN" 
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Maps API サンプル</title>
+
+    <script type="text/javascript"
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCXgopoHv4Qh_n-IFMuUXI_sM5arvx5WqU&libraries=places">
+    </script>
+    <script type="text/javascript">
+    <!--
+	    // ここを参考に作りました
+	    // http://mae.chab.in/archives/2351
+	    // APIリファレンス: https://developers.google.com/maps/documentation/javascript/tutorial?hl=ja
+	    function initialize(geo) {
+
+	    	//var latLng = (lat)? lat : new google.maps.LatLng(35.709984,139.810703);
+
+	    	var latLng = (geo)? geo.geometry.location: null;
+
+
+	    	if(latLng){
+			    var opts = {
+			        // 地図nズームレベル　数字が大きい程ズームイン
+			        zoom: 14,
+			      	// 地図の中心点となる位置情報（緯度, 経度）
+			        center: latLng,
+			        // 地図のタイプ　ROADMAP、HYBRIDなど
+			        mapTypeId: google.maps.MapTypeId.ROADMAP,
+			    };
+
+			    // マップを表示
+		      	var map = new google.maps.Map(document.getElementById("map_canvas"), opts);
+
+		      	// 表示したマップの中央座表にマーカーを設定
+		      	var marker = new google.maps.Marker({
+		      		map: map,
+		      		position: latLng
+		      	});
+
+		      	//情報ウィンドウを追加する
+		      	var contentString = "<section><h1>" + geo.formatted_address + "</h1><section>"
+
+		      	var infoWindow = new google.maps.InfoWindow({
+		      		content: contentString
+		      	});
+
+		      	marker.addListener('click', function(){
+			      	infoWindow.open(map, marker);
+		      	});
+
+			}
+	    }
+
+
+
+	    function geoCoding(address){
+	    	// google.maps.Geocoder()コンストラクタのインスタンスを生成
+	    	var geocoder = new google.maps.Geocoder();
+	    	var option = {
+	    		'address': address, 
+	    		//region: "ja",
+	    		componentRestrictions: {
+	    			country: 'JP'
+	    		}
+	    	};
+	    	
+	    	console.log(option);
+	    	geocoder.geocode(option, function(results, status){
+	    		console.log(results, status);
+	    		if( status == google.maps.GeocoderStatus.OK ){
+	    			// とりあえず検索結果の先頭を表示
+		    		initialize(results[0]);
+	    		}else{
+	    			alert("見つかりませんでした:" + status);
+	    		}
+	    	});
+
+	    }
+
+	    document.addEventListener('DOMContentLoaded', function(){
+		    document.querySelector("#addressSearch").addEventListener("click", function(){
+		    	geoCoding(document.querySelector("#address").value);
+		    			    });
+	    });
+
+
+    -->
+    </script>
+
+  </head>
+  <body onload="initialize()">
+  </head>
+  <body>
+
+    住所：<input type="text" id="address"> <button id="addressSearch">検索</button>
+
+    <p id="addressTitle">初期値</p>
+    <div id="map_canvas" style="width:800px; height:450px"></div>
+
+  </body>
+</html>
