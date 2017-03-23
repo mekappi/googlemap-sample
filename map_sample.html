@@ -3,48 +3,50 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>Google Maps API ƒTƒ“ƒvƒ‹</title>
+    <title>Google Maps API ã‚µãƒ³ãƒ—ãƒ«</title>
 
+    <!-- TODO change to your APIKEY -->
     <script type="text/javascript"
-      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCXgopoHv4Qh_n-IFMuUXI_sM5arvx5WqU&libraries=places">
+      src="http://maps.googleapis.com/maps/api/js?key=AIzaSyC367EfJ79GeKl1zQO5GjNaa-ZL_RnPT34&libraries=places">
     </script>
     <script type="text/javascript">
     <!--
-	    // ‚±‚±‚ğQl‚Éì‚è‚Ü‚µ‚½
+	    // ã“ã“ã‚’å‚è€ƒã«ä½œã‚Šã¾ã—ãŸ
 	    // http://mae.chab.in/archives/2351
-	    // APIƒŠƒtƒ@ƒŒƒ“ƒX: https://developers.google.com/maps/documentation/javascript/tutorial?hl=ja
+	    // APIãƒªãƒ•ã‚¡ãƒ¬ãƒ³ã‚¹: https://developers.google.com/maps/documentation/javascript/tutorial?hl=ja
 	    function initialize(geo) {
 
 	    	//var latLng = (lat)? lat : new google.maps.LatLng(35.709984,139.810703);
 
 	    	var latLng = (geo)? geo.geometry.location: null;
 
-
 	    	if(latLng){
 			    var opts = {
-			        // ’n}nƒY[ƒ€ƒŒƒxƒ‹@”š‚ª‘å‚«‚¢’öƒY[ƒ€ƒCƒ“
+			        // åœ°å›³nã‚ºãƒ¼ãƒ ãƒ¬ãƒ™ãƒ«ã€€æ•°å­—ãŒå¤§ãã„ç¨‹ã‚ºãƒ¼ãƒ ã‚¤ãƒ³
 			        zoom: 14,
-			      	// ’n}‚Ì’†S“_‚Æ‚È‚éˆÊ’uî•ñiˆÜ“x, Œo“xj
+			      	// åœ°å›³ã®ä¸­å¿ƒç‚¹ã¨ãªã‚‹ä½ç½®æƒ…å ±ï¼ˆç·¯åº¦, çµŒåº¦ï¼‰
 			        center: latLng,
-			        // ’n}‚Ìƒ^ƒCƒv@ROADMAPAHYBRID‚È‚Ç
+			        // åœ°å›³ã®ã‚¿ã‚¤ãƒ—ã€€ROADMAPã€HYBRIDãªã©
 			        mapTypeId: google.maps.MapTypeId.ROADMAP,
 			    };
 
-			    // ƒ}ƒbƒv‚ğ•\¦
+			    // ãƒãƒƒãƒ—ã‚’è¡¨ç¤º
 		      	var map = new google.maps.Map(document.getElementById("map_canvas"), opts);
 
-		      	// •\¦‚µ‚½ƒ}ƒbƒv‚Ì’†‰›À•\‚Éƒ}[ƒJ[‚ğİ’è
+		      	// ãƒãƒƒãƒ—ã‚’ã‚¯ãƒªãƒƒã‚¯ã—ãŸç®‡æ‰€ã«ãƒãƒ¼ã‚«ãƒ¼ã‚’è¨­å®š
+		      	map.addListener('click', function(e){
+		      		createMarker(this, e.latLng);
+		      	});
+
+
+		      	// è¡¨ç¤ºã—ãŸãƒãƒƒãƒ—ã®ä¸­å¤®åº§è¡¨ã«ãƒãƒ¼ã‚«ãƒ¼ã‚’è¨­å®š
 		      	var marker = new google.maps.Marker({
 		      		map: map,
 		      		position: latLng
 		      	});
 
-		      	//î•ñƒEƒBƒ“ƒhƒE‚ğ’Ç‰Á‚·‚é
-		      	var contentString = "<section><h1>" + geo.formatted_address + "</h1><section>"
-
-		      	var infoWindow = new google.maps.InfoWindow({
-		      		content: contentString
-		      	});
+		      	//æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’è¿½åŠ ã™ã‚‹
+		      	var infoWindow = createInfoWindow(geo.formatted_address);
 
 		      	marker.addListener('click', function(){
 			      	infoWindow.open(map, marker);
@@ -53,10 +55,37 @@
 			}
 	    }
 
+	    //*------------------------------------
+		//  ãƒãƒ¼ã‚«ãƒ¼ã‚’åœ°å›³ä¸Šã«è¿½åŠ 
+		//  map : mapã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+		//  latlng :  latlngã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ
+	    //------------------------------------*/
+	    function createMarker(map, latLng){
+	    	var marker = new google.maps.Marker({
+		      	map: map,
+		      	position: latLng
+		    });
 
+		    return marker;
+	    }
 
+	    //*------------------------------------
+		//  æƒ…å ±ã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚’ä½œæˆ
+	    //------------------------------------*/
+	    function createInfoWindow(content){
+		    var contentString = "<section><h1>" + content + "</h1><section>"
+
+		    return new google.maps.InfoWindow({
+		    	content: contentString
+		    });
+	    }
+
+	    //*------------------------------------
+		//  ã‚¸ã‚ªã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã—Mapã‚’ãƒªãƒ•ãƒ¬ãƒƒã‚·ãƒ¥
+		//
+		//  address: ã‚¸ã‚ªã‚³ãƒ¼ãƒ‡ã‚£ãƒ³ã‚°ã™ã‚‹æ¤œç´¢ã‚­ãƒ¼ãƒ¯ãƒ¼ãƒ‰
+	    //------------------------------------*/
 	    function geoCoding(address){
-	    	// google.maps.Geocoder()ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ğ¶¬
 	    	var geocoder = new google.maps.Geocoder();
 	    	var option = {
 	    		'address': address, 
@@ -66,14 +95,13 @@
 	    		}
 	    	};
 	    	
-	    	console.log(option);
 	    	geocoder.geocode(option, function(results, status){
 	    		console.log(results, status);
 	    		if( status == google.maps.GeocoderStatus.OK ){
-	    			// ‚Æ‚è‚ ‚¦‚¸ŒŸõŒ‹‰Ê‚Ìæ“ª‚ğ•\¦
+	    			// ã¨ã‚Šã‚ãˆãšæ¤œç´¢çµæœã®å…ˆé ­ã‚’è¡¨ç¤º
 		    		initialize(results[0]);
 	    		}else{
-	    			alert("Œ©‚Â‚©‚è‚Ü‚¹‚ñ‚Å‚µ‚½:" + status);
+	    			alert("è¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã§ã—ãŸ:" + status);
 	    		}
 	    	});
 
@@ -82,7 +110,7 @@
 	    document.addEventListener('DOMContentLoaded', function(){
 		    document.querySelector("#addressSearch").addEventListener("click", function(){
 		    	geoCoding(document.querySelector("#address").value);
-		    			    });
+		    });
 	    });
 
 
@@ -94,9 +122,9 @@
   </head>
   <body>
 
-    ZŠF<input type="text" id="address"> <button id="addressSearch">ŒŸõ</button>
+    ä½æ‰€ï¼š<input type="text" id="address"> <button id="addressSearch">æ¤œç´¢</button>
 
-    <p id="addressTitle">‰Šú’l</p>
+    <p id="addressTitle">åˆæœŸå€¤</p>
     <div id="map_canvas" style="width:800px; height:450px"></div>
 
   </body>
